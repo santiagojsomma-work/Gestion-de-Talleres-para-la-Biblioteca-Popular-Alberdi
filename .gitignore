@@ -1,0 +1,39 @@
+# Archivos de Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Entorno virtual
+venv/
+.venv/
+env/
+
+# Variables de entorno (NUNCA versionar credenciales)
+.env
+
+# Base de datos local
+db.sqlite3
+db.sqlite3-journal
+
+# Archivos estaticos recolectados
+staticfiles/
+
+# Archivos de log
+*.log
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de VS Code (opcional, se puede versionar)
+# .vscode/
+
+# Archivos de cobertura de pruebas
+.coverage
+htmlcov/
+
+# Archivos de migraciones (opcional: algunos equipos los versionan)
+# */migrations/*.py
+# !*/migrations/__init__.py
