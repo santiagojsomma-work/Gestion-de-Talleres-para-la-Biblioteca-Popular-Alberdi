@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Clases - {{ taller.nombre }} - Biblioteca{% endblock %}
+
+{% block content %}
+<h2>Clases - {{ taller.nombre }}</h2>
+
+<div class="card mt-4">
+    <div class="card-body">
+        <h5 class="card-title">Crear nueva clase</h5>
+        <form method="post" action="{% url 'crear_clase' taller.pk %}" class="row g-3">
+            {% csrf_token %}
+            <div class="col-md-4">
+                <input type="date" class="form-control" name="fecha" required>
+            </div>
+            <div class="col-md-6">
+                <input type="text" class="form-control" name="tema" placeholder="Tema de la clase">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary">Crear</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if clases %}
+    <table class="table table-striped mt-4">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Tema</th>
+                <th>Estado</th>
+                <th>Accion</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for clase in clases %}
+                <tr class="{% if clase.suspendida %}table-warning{% endif %}">
+                    <td>{{ clase.fecha }}</td>
+                    <td>{{ clase.tema|default:"-" }}</td>
+                    <td>
+                        {% if clase.suspendida %}
+                            <span class="badge bg-warning">Suspendida</span>
+                        {% else %}
+                            <span class="badge bg-success">Dictada</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'tomar_asistencia' clase.pk %}" class="btn btn-sm btn-primary">Tomar asistencia</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p class="mt-4">No hay clases registradas.</p>
+{% endif %}
+{% endblock %}

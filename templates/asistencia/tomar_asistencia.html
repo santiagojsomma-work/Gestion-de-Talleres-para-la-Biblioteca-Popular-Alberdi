@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Tomar Asistencia - {{ clase.taller.nombre }} - Biblioteca{% endblock %}
+
+{% block content %}
+<h2>Tomar Asistencia</h2>
+<p class="text-muted">{{ clase.taller.nombre }} - {{ clase.fecha }}</p>
+
+<form method="post" class="mt-4">
+    {% csrf_token %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Alumno</th>
+                <th>Estado</th>
+                <th>Justificacion</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for inscripcion in inscripciones %}
+                <tr>
+                    <td>{{ inscripcion.alumno }}</td>
+                    <td>
+                        <select class="form-select" name="estado_{{ inscripcion.pk }}">
+                            <option value="presente" {% if asistencias_existentes|get_item:inscripcion.pk|default:'' == 'presente' %}selected{% endif %}>Presente</option>
+                            <option value="ausente" {% if asistencias_existentes|get_item:inscripcion.pk|default:'' == 'ausente' %}selected{% endif %}>Ausente</option>
+                            <option value="justificado" {% if asistencias_existentes|get_item:inscripcion.pk|default:'' == 'justificado' %}selected{% endif %}>Justificado</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="justificacion_{{ inscripcion.pk }}"
+                               placeholder="Solo si es justificado"
+                               value="{{ asistencias_existentes|get_item:inscripcion.pk|default:'' }}">
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary">Guardar asistencia</button>
+    <a href="{% url 'lista_clases' clase.taller.pk %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

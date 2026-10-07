@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Mi Asistencia - Biblioteca{% endblock %}
+
+{% block content %}
+<h2>Mi Asistencia</h2>
+
+{% if promedios %}
+    <div class="mt-4">
+        <h4>Promedio por taller</h4>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Taller</th>
+                    <th>Promedio</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for taller_id, promedio in promedios.items %}
+                    <tr>
+                        <td>{{ asistencias|first|default:'' }}</td>
+                        <td>{{ promedio|floatformat:1 }}%</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endif %}
+
+{% if asistencias %}
+    <table class="table table-striped mt-4">
+        <thead>
+            <tr>
+                <th>Taller</th>
+                <th>Fecha</th>
+                <th>Tema</th>
+                <th>Estado</th>
+                <th>Justificacion</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for asistencia in asistencias %}
+                <tr>
+                    <td>{{ asistencia.clase.taller.nombre }}</td>
+                    <td>{{ asistencia.clase.fecha }}</td>
+                    <td>{{ asistencia.clase.tema|default:"-" }}</td>
+                    <td>
+                        {% if asistencia.estado == 'presente' %}
+                            <span class="badge bg-success">Presente</span>
+                        {% elif asistencia.estado == 'ausente' %}
+                            <span class="badge bg-danger">Ausente</span>
+                        {% else %}
+                            <span class="badge bg-warning">Justificado</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ asistencia.justificacion|default:"-" }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p class="mt-4">No tenes asistencias registradas.</p>
+{% endif %}
+{% endblock %}
