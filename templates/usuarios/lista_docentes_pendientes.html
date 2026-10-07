@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Docentes Pendientes - Biblioteca{% endblock %}
+
+{% block content %}
+<h2>Docentes Pendientes de Aprobacion</h2>
+{% if docentes_pendientes %}
+    <table class="table mt-4">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Email</th>
+                <th>DNI</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for docente in docentes_pendientes %}
+                <tr>
+                    <td>{{ docente.first_name }}</td>
+                    <td>{{ docente.last_name }}</td>
+                    <td>{{ docente.email }}</td>
+                    <td>{{ docente.dni }}</td>
+                    <td>
+                        <a href="{% url 'aprobar_docente' docente.pk %}" class="btn btn-success btn-sm">Aprobar</a>
+                        <a href="{% url 'rechazar_docente' docente.pk %}" class="btn btn-danger btn-sm">Rechazar</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p class="mt-4">No hay docentes pendientes de aprobacion.</p>
+{% endif %}
+{% endblock %}

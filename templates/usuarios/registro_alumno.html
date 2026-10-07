@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}Registro de Alumno - Biblioteca{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h2>Registro de Alumno</h2>
+        <form method="post" class="mt-4">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.first_name.id_for_label }}" class="form-label">Nombre</label>
+                    {{ form.first_name }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.last_name.id_for_label }}" class="form-label">Apellido</label>
+                    {{ form.last_name }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+                    {{ form.email }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.dni.id_for_label }}" class="form-label">DNI</label>
+                    {{ form.dni }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.telefono.id_for_label }}" class="form-label">Telefono</label>
+                    {{ form.telefono }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.fecha_nacimiento.id_for_label }}" class="form-label">Fecha de nacimiento</label>
+                    {{ form.fecha_nacimiento }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.password1.id_for_label }}" class="form-label">Contraseña</label>
+                    {{ form.password1 }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.password2.id_for_label }}" class="form-label">Confirmar contraseña</label>
+                    {{ form.password2 }}
+                </div>
+            </div>
+
+            <div id="tutor-fields" class="border p-3 mb-3" style="display: none;">
+                <h5>Datos del Tutor (obligatorio para menores de edad)</h5>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.tutor_nombre.id_for_label }}" class="form-label">Nombre del tutor</label>
+                        {{ form.tutor_nombre }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.tutor_apellido.id_for_label }}" class="form-label">Apellido del tutor</label>
+                        {{ form.tutor_apellido }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.tutor_dni.id_for_label }}" class="form-label">DNI del tutor</label>
+                        {{ form.tutor_dni }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.tutor_telefono.id_for_label }}" class="form-label">Telefono del tutor</label>
+                        {{ form.tutor_telefono }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.tutor_email.id_for_label }}" class="form-label">Email del tutor</label>
+                        {{ form.tutor_email }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.tutor_parentesco.id_for_label }}" class="form-label">Parentesco</label>
+                        {{ form.tutor_parentesco }}
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Registrarse</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById('id_fecha_nacimiento').addEventListener('change', function() {
+        const fechaNacimiento = new Date(this.value);
+        const hoy = new Date();
+        let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+        const mes = hoy.getMonth() - fechaNacimiento.getMonth();
+        if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
+            edad--;
+        }
+        document.getElementById('tutor-fields').style.display = edad < 18 ? 'block' : 'none';
+    });
+</script>
+{% endblock %}

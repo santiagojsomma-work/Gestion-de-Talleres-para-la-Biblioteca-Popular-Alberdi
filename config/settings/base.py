@@ -3,12 +3,15 @@ Configuracion base del proyecto Django.
 Contiene las configuraciones comunes a todos los entornos.
 """
 
-import os
 from pathlib import Path
-from decouple import config
+
+from decouple import AutoConfig
 
 # Ruta base del proyecto
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+# Configurar python-decouple para buscar .env en la raiz del proyecto
+config = AutoConfig(search_path=str(BASE_DIR))
 
 # Configuracion de seguridad
 SECRET_KEY = config('SECRET_KEY')
@@ -23,14 +26,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     # Apps del proyecto
     'usuarios',
-    'talleres',
-    'inscripciones',
-    'pagos',
-    'asistencia',
-    'ingresos',
-    'notificaciones',
+
+    # Si todavia no creaste estas apps, dejalas comentadas.
+    # Cuando las crees, descomentalas.
+    # 'talleres',
+    # 'inscripciones',
+    # 'pagos',
+    # 'asistencia',
+    # 'ingresos',
+    # 'notificaciones',
 ]
 
 # Middleware
@@ -64,7 +71,7 @@ TEMPLATES = [
     },
 ]
 
-# Configuracion de WSGI
+# Configuracion WSGI
 WSGI_APPLICATION = 'config.wsgi.application'
 
 # Configuracion de base de datos
@@ -101,7 +108,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Archivos media (subida de archivos)
+# Archivos media
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -109,15 +116,24 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Configuracion de email
-EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
+EMAIL_BACKEND = config(
+    'EMAIL_BACKEND',
+    default='django.core.mail.backends.console.EmailBackend'
+)
 EMAIL_HOST = config('EMAIL_HOST', default='localhost')
 EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
-DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='biblioteca@ejemplo.com')
+DEFAULT_FROM_EMAIL = config(
+    'DEFAULT_FROM_EMAIL',
+    default='biblioteca@ejemplo.com'
+)
 
 # Configuracion de login
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
+
+# Modelo de usuario personalizado
+AUTH_USER_MODEL = 'usuarios.Usuario'

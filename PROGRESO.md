@@ -2,9 +2,9 @@
 
 ## Estado del proyecto
 
-- **Etapa actual**: Etapa 2 - Usuarios y roles
+- **Etapa actual**: Etapa 3 - Talleres y horarios
 - **Fecha de inicio**: 2026-10-03
-- **Estado**: Etapa 1 completada
+- **Estado**: Etapa 2 completada
 
 ## Etapas completadas
 
@@ -12,6 +12,7 @@
 |-------|--------|--------|-------|
 | 0 | Analisis y planificacion | Completada | 2026-10-03 |
 | 1 | Entorno y esqueleto del proyecto | Completada | 2026-10-06 |
+| 2 | Usuarios y roles | Completada | 2026-10-07 |
 
 ## Decisiones tomadas
 

@@ -19,7 +19,7 @@ DATABASES = {
     }
 }
 
-# Email por consola en desarrollo (no se envian emails reales)
+# Email por consola en desarrollo
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Mostrar errores detallados
