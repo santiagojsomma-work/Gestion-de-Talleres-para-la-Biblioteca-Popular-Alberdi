@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Cuotas Pendientes - Biblioteca{% endblock %}
+
+{% block content %}
+<h2>Cuotas Pendientes</h2>
+
+{% if cuotas %}
+    <table class="table table-striped mt-4">
+        <thead>
+            <tr>
+                <th>Alumno</th>
+                <th>Taller</th>
+                <th>Mes</th>
+                <th>Monto</th>
+                <th>Vencimiento</th>
+                <th>Estado</th>
+                <th>Accion</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cuota in cuotas %}
+                <tr class="{% if cuota.estado == 'vencida' %}table-danger{% elif cuota.estado == 'parcial' %}table-warning{% endif %}">
+                    <td>{{ cuota.inscripcion.alumno }}</td>
+                    <td>{{ cuota.inscripcion.taller.nombre }}</td>
+                    <td>{{ cuota.mes_anio|date:"Y-m" }}</td>
+                    <td>${{ cuota.monto }}</td>
+                    <td>{{ cuota.fecha_vencimiento }}</td>
+                    <td>
+                        {% if cuota.estado == 'vencida' %}
+                            <span class="badge bg-danger">Vencida</span>
+                        {% elif cuota.estado == 'parcial' %}
+                            <span class="badge bg-warning">Pago parcial</span>
+                        {% else %}
+                            <span class="badge bg-info">Pendiente</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'registrar_pago' cuota.pk %}" class="btn btn-sm btn-primary">Registrar pago</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p class="mt-4">No hay cuotas pendientes.</p>
+{% endif %}
+{% endblock %}

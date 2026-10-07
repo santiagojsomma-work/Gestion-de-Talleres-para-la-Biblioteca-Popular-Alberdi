@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Mis Inscripciones - Biblioteca{% endblock %}
+
+{% block content %}
+<h2>Mis Inscripciones</h2>
+
+{% if inscripciones %}
+    <table class="table table-striped mt-4">
+        <thead>
+            <tr>
+                <th>Taller</th>
+                <th>Fecha de inscripcion</th>
+                <th>Estado</th>
+                <th>Accion</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for inscripcion in inscripciones %}
+                <tr>
+                    <td>{{ inscripcion.taller.nombre }}</td>
+                    <td>{{ inscripcion.fecha_inscripcion }}</td>
+                    <td>
+                        {% if inscripcion.en_lista_espera %}
+                            <span class="badge bg-warning">Lista de espera</span>
+                        {% else %}
+                            <span class="badge bg-success">Inscripto</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form method="post" action="{% url 'darse_de_baja' inscripcion.pk %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-danger">Darse de baja</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p class="mt-4">No tenes inscripciones activas.</p>
+    <a href="{% url 'grilla_semanal' %}" class="btn btn-primary">Ver talleres disponibles</a>
+{% endif %}
+{% endblock %}

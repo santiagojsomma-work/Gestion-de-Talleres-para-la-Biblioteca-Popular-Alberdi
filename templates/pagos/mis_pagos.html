@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Mis Pagos - Biblioteca{% endblock %}
+
+{% block content %}
+<h2>Mis Pagos</h2>
+
+<div class="mt-4">
+    {% if estado == 'al_dia' %}
+        <div class="alert alert-success">
+            <strong>Estado:</strong> Al dia. No tenes cuotas vencidas.
+        </div>
+    {% elif estado == 'pago_parcial' %}
+        <div class="alert alert-warning">
+            <strong>Estado:</strong> Pago parcial. Tenes cuotas con pagos parciales.
+        </div>
+    {% else %}
+        <div class="alert alert-danger">
+            <strong>Estado:</strong> Adeudado. Tenes cuotas vencidas sin pagar.
+        </div>
+    {% endif %}
+</div>
+
+{% if cuotas %}
+    <table class="table table-striped mt-4">
+        <thead>
+            <tr>
+                <th>Taller</th>
+                <th>Mes</th>
+                <th>Monto</th>
+                <th>Pagado</th>
+                <th>Saldo</th>
+                <th>Vencimiento</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cuota in cuotas %}
+                <tr class="{% if cuota.estado == 'vencida' %}table-danger{% elif cuota.estado == 'parcial' %}table-warning{% endif %}">
+                    <td>{{ cuota.inscripcion.taller.nombre }}</td>
+                    <td>{{ cuota.mes_anio|date:"Y-m" }}</td>
+                    <td>${{ cuota.monto }}</td>
+                    <td>${{ cuota.monto_pagado }}</td>
+                    <td>${{ cuota.saldo_pendiente }}</td>
+                    <td>{{ cuota.fecha_vencimiento }}</td>
+                    <td>
+                        {% if cuota.estado == 'pagada' %}
+                            <span class="badge bg-success">Pagada</span>
+                        {% elif cuota.estado == 'parcial' %}
+                            <span class="badge bg-warning">Pago parcial</span>
+                        {% elif cuota.estado == 'vencida' %}
+                            <span class="badge bg-danger">Vencida</span>
+                        {% else %}
+                            <span class="badge bg-info">Pendiente</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p class="mt-4">No tenes cuotas registradas.</p>
+{% endif %}
+{% endblock %}
