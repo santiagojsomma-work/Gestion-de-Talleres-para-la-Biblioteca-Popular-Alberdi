@@ -108,6 +108,8 @@ class UsuarioAdmin(UserAdmin):
                     'last_name',
                     'dni',
                     'fecha_nacimiento',
+                    'rol',
+                    'aprobado',
                     'password1',
                     'password2',
                 ),
