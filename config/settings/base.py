@@ -32,7 +32,7 @@ INSTALLED_APPS = [
 
     # Si todavia no creaste estas apps, dejalas comentadas.
     # Cuando las crees, descomentalas.
-    # 'talleres',
+    'talleres',
     # 'inscripciones',
     # 'pagos',
     # 'asistencia',

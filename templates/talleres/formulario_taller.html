@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ titulo }} - Biblioteca{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h2>{{ titulo }}</h2>
+        <form method="post" class="mt-4">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="{{ form.nombre.id_for_label }}" class="form-label">Nombre</label>
+                {{ form.nombre }}
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.descripcion.id_for_label }}" class="form-label">Descripcion</label>
+                {{ form.descripcion }}
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.docente.id_for_label }}" class="form-label">Docente</label>
+                {{ form.docente }}
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.cupo.id_for_label }}" class="form-label">Cupo maximo</label>
+                    {{ form.cupo }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.cuota_mensual.id_for_label }}" class="form-label">Cuota mensual (ARS)</label>
+                    {{ form.cuota_mensual }}
+                </div>
+            </div>
+            <div class="mb-3 form-check">
+                {{ form.activo }}
+                <label for="{{ form.activo.id_for_label }}" class="form-check-label">Activo</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a href="{% url 'lista_talleres' %}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
