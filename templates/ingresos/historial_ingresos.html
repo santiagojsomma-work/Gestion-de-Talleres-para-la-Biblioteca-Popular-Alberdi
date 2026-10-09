@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Historial de Ingresos - Biblioteca{% endblock %}
+
+{% block content %}
+<h2>Historial de Ingresos</h2>
+
+{% if ingresos %}
+    <table class="table table-striped mt-4">
+        <thead>
+            <tr>
+                <th>Persona</th>
+                <th>DNI</th>
+                <th>Fecha y hora</th>
+                <th>Observacion</th>
+                <th>Detalle</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ingreso in ingresos %}
+                <tr>
+                    <td>{{ ingreso.usuario.first_name }} {{ ingreso.usuario.last_name }}</td>
+                    <td>{{ ingreso.usuario.dni }}</td>
+                    <td>{{ ingreso.fecha_hora }}</td>
+                    <td>{{ ingreso.observacion|default:"-" }}</td>
+                    <td>
+                        <a href="{% url 'detalle_ingreso' ingreso.pk %}" class="btn btn-sm btn-info">Ver</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p class="mt-4">No hay ingresos registrados.</p>
+{% endif %}
+{% endblock %}

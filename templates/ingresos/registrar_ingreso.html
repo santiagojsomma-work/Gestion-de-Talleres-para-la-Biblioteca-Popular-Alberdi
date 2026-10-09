@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Registrar Ingreso - Biblioteca{% endblock %}
+
+{% block content %}
+<h2>Registrar Ingreso</h2>
+
+<form method="post" class="mt-4">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="dni" class="form-label">DNI</label>
+        <input type="text" class="form-control" id="dni" name="dni" placeholder="Ingrese el DNI de la persona" required>
+    </div>
+    <div class="mb-3">
+        <label for="observacion" class="form-label">Observacion</label>
+        <textarea class="form-control" id="observacion" name="observacion" rows="2" placeholder="Observaciones adicionales (opcional)"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Registrar ingreso</button>
+</form>
+
+{% if ingreso %}
+    <div class="alert alert-success mt-4">
+        <h5>Ingreso registrado correctamente</h5>
+        <p><strong>Persona:</strong> {{ usuario.first_name }} {{ usuario.last_name }}</p>
+        <p><strong>DNI:</strong> {{ usuario.dni }}</p>
+        <p><strong>Fecha y hora:</strong> {{ ingreso.fecha_hora }}</p>
+    </div>
+
+    {% if inscripciones %}
+        <div class="mt-4">
+            <h5>Talleres inscriptos</h5>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Taller</th>
+                        <th>Docente</th>
+                        <th>Fecha de inscripcion</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for inscripcion in inscripciones %}
+                        <tr>
+                            <td>{{ inscripcion.taller.nombre }}</td>
+                            <td>{{ inscripcion.taller.docente|default:"Sin asignar" }}</td>
+                            <td>{{ inscripcion.fecha_inscripcion }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-warning mt-4">
+            Esta persona no tiene inscripciones activas.
+        </div>
+    {% endif %}
+{% endif %}
+{% endblock %}

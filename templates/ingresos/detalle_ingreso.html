@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalle de Ingreso - Biblioteca{% endblock %}
+
+{% block content %}
+<h2>Detalle de Ingreso</h2>
+
+<div class="card mt-4">
+    <div class="card-body">
+        <h5 class="card-title">{{ ingreso.usuario.first_name }} {{ ingreso.usuario.last_name }}</h5>
+        <p><strong>DNI:</strong> {{ ingreso.usuario.dni }}</p>
+        <p><strong>Fecha y hora:</strong> {{ ingreso.fecha_hora }}</p>
+        <p><strong>Observacion:</strong> {{ ingreso.observacion|default:"-" }}</p>
+    </div>
+</div>
+
+{% if inscripciones %}
+    <div class="mt-4">
+        <h5>Talleres inscriptos</h5>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Taller</th>
+                    <th>Docente</th>
+                    <th>Fecha de inscripcion</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inscripcion in inscripciones %}
+                    <tr>
+                        <td>{{ inscripcion.taller.nombre }}</td>
+                        <td>{{ inscripcion.taller.docente|default:"Sin asignar" }}</td>
+                        <td>{{ inscripcion.fecha_inscripcion }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="alert alert-warning mt-4">
+        Esta persona no tiene inscripciones activas.
+    </div>
+{% endif %}
+
+<a href="{% url 'historial_ingresos' %}" class="btn btn-secondary mt-3">Volver al historial</a>
+{% endblock %}

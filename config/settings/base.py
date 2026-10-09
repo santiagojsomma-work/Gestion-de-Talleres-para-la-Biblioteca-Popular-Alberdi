@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'inscripciones',
     'pagos',
     'asistencia',
-    # 'ingresos',
+    'ingresos',
     # 'notificaciones',
 ]
 
