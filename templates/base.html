@@ -19,11 +19,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'mis_notificaciones' %}">
                                 Notificaciones
-                                {% with notificaciones_no_leidas=user.notificaciones.filter.leida=False.count %}
-                                    {% if notificaciones_no_leidas > 0 %}
-                                        <span class="badge bg-danger">{{ notificaciones_no_leidas }}</span>
-                                    {% endif %}
-                                {% endwith %}
+                                {% if notificaciones_no_leidas > 0 %}
+                                    <span class="badge bg-danger">{{ notificaciones_no_leidas }}</span>
+                                {% endif %}
                             </a>
                         </li>
                         <li class="nav-item">
