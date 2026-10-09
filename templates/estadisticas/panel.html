@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block title %}Panel de Estadisticas - Biblioteca{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Panel de Estadisticas</h2>
+    <a href="{% url 'exportar_estadisticas_csv' %}" class="btn btn-success">Exportar a CSV</a>
+</div>
+
+{% if estadisticas %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Cantidad de Alumnos por Taller</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="graficoAlumnos"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>% de Alumnos Al Dia por Taller</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="graficoAlDia"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Promedio de Asistencia por Taller</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="graficoAsistencia"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <h4>Detalle de Estadisticas</h4>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Taller</th>
+                    <th>Docente</th>
+                    <th>Cantidad de Alumnos</th>
+                    <th>% Al Dia</th>
+                    <th>Promedio de Asistencia</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for estadistica in estadisticas %}
+                    <tr>
+                        <td>{{ estadistica.nombre }}</td>
+                        <td>{{ estadistica.docente }}</td>
+                        <td>{{ estadistica.cantidad_alumnos }}</td>
+                        <td>{{ estadistica.porcentaje_al_dia }}%</td>
+                        <td>{{ estadistica.promedio_asistencia }}%</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <p>No hay talleres activos para mostrar estadisticas.</p>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Datos para los graficos
+    var nombres = {{ nombres|safe }};
+    var alumnos = {{ alumnos|safe }};
+    var porcentajesAlDia = {{ porcentajes_al_dia|safe }};
+    var promediosAsistencia = {{ promedios_asistencia|safe }};
+
+    // Grafico de Alumnos
+    new Chart(document.getElementById('graficoAlumnos'), {
+        type: 'bar',
+        data: {
+            labels: nombres,
+            datasets: [{
+                label: 'Cantidad de Alumnos',
+                data: alumnos,
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Grafico de % Al Dia
+    new Chart(document.getElementById('graficoAlDia'), {
+        type: 'bar',
+        data: {
+            labels: nombres,
+            datasets: [{
+                label: '% Al Dia',
+                data: porcentajesAlDia,
+                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100
+                }
+            }
+        }
+    });
+
+    // Grafico de Asistencia
+    new Chart(document.getElementById('graficoAsistencia'), {
+        type: 'bar',
+        data: {
+            labels: nombres,
+            datasets: [{
+                label: 'Promedio de Asistencia (%)',
+                data: promediosAsistencia,
+                backgroundColor: 'rgba(255, 159, 64, 0.5)',
+                borderColor: 'rgba(255, 159, 64, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

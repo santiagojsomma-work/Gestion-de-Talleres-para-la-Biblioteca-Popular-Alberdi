@@ -16,6 +16,7 @@ urlpatterns = [
     path('asistencia/', include('asistencia.urls')),
     path('ingresos/', include('ingresos.urls')),
     path('notificaciones/', include('notificaciones.urls')),
+    path('estadisticas/', include('estadisticas.urls')),
 
     # Recuperacion de contraseña
     path('password-reset/', TemplateView.as_view(template_name='registration/password_reset_form.html'), name='password_reset'),
