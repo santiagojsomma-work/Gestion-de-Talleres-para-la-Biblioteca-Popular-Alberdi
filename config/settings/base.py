@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'asistencia',
     'ingresos',
     'notificaciones',
+    'auditoria',
 ]
 
 # Middleware

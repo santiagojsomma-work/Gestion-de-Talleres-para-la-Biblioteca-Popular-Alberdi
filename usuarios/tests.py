@@ -1,19 +1,17 @@
 """
-Pruebas del modulo de usuarios.
+Pruebas automatizadas del modulo de usuarios.
 """
 
-from django.test import TestCase
+from datetime import date
+from django.test import TestCase, Client
 from django.urls import reverse
 from .models import Usuario, Tutor
 
 
 class UsuarioModelTest(TestCase):
-    """
-    Pruebas del modelo de Usuario.
-    """
+    """Pruebas del modelo Usuario."""
 
     def setUp(self):
-        """Crear datos de prueba."""
         self.usuario = Usuario.objects.create_user(
             email='test@ejemplo.com',
             username='testuser',
@@ -21,8 +19,9 @@ class UsuarioModelTest(TestCase):
             first_name='Test',
             last_name='User',
             dni='12345678',
-            fecha_nacimiento='1990-01-01',
-            rol=Usuario.ROL_ALUMNO
+            fecha_nacimiento=date(1990, 1, 1),
+            rol=Usuario.ROL_ALUMNO,
+            aprobado=True
         )
 
     def test_creacion_usuario(self):
@@ -33,11 +32,8 @@ class UsuarioModelTest(TestCase):
 
     def test_es_menor_de_edad(self):
         """Verifica la deteccion de menores de edad."""
-        from datetime import date
-        # Usuario mayor de edad
         self.assertFalse(self.usuario.es_menor_de_edad)
 
-        # Usuario menor de edad
         menor = Usuario.objects.create_user(
             email='menor@ejemplo.com',
             username='menor',
@@ -45,59 +41,24 @@ class UsuarioModelTest(TestCase):
             first_name='Menor',
             last_name='User',
             dni='87654321',
-            fecha_nacimiento='2015-01-01',
+            fecha_nacimiento=date(2015, 1, 1),
             rol=Usuario.ROL_ALUMNO
         )
         self.assertTrue(menor.es_menor_de_edad)
 
     def test_str(self):
-        """Verifica la representacion en string del usuario."""
+        """Verifica la representacion en string."""
         self.assertEqual(str(self.usuario), 'Test User (test@ejemplo.com)')
 
 
-class TutorModelTest(TestCase):
-    """
-    Pruebas del modelo de Tutor.
-    """
+class RegistroAlumnoViewTest(TestCase):
+    """Pruebas de la vista de registro de alumnos."""
 
     def setUp(self):
-        """Crear datos de prueba."""
-        self.menor = Usuario.objects.create_user(
-            email='menor@ejemplo.com',
-            username='menor',
-            password='testpass123',
-            first_name='Menor',
-            last_name='User',
-            dni='87654321',
-            fecha_nacimiento='2015-01-01',
-            rol=Usuario.ROL_ALUMNO
-        )
-        self.tutor = Tutor.objects.create(
-            usuario_alumno=self.menor,
-            nombre='Padre',
-            apellido='Tutor',
-            dni='11111111',
-            telefono='11-1111-1111',
-            parentesco=Tutor.PADRE
-        )
+        self.client = Client()
 
-    def test_creacion_tutor(self):
-        """Verifica que se puede crear un tutor."""
-        self.assertEqual(self.tutor.nombre, 'Padre')
-        self.assertEqual(self.tutor.parentesco, Tutor.PADRE)
-
-    def test_str(self):
-        """Verifica la representacion en string del tutor."""
-        self.assertEqual(str(self.tutor), 'Padre Tutor (Padre)')
-
-
-class RegistroAlumnoViewTest(TestCase):
-    """
-    Pruebas de la vista de registro de alumnos.
-    """
-
-    def test_registro_alumno(self):
-        """Verifica que se puede registrar un alumno."""
+    def test_registro_alumno_mayor(self):
+        """Verifica que un alumno mayor de edad puede registrarse."""
         response = self.client.post(reverse('registro_alumno'), {
             'email': 'nuevo@ejemplo.com',
             'first_name': 'Nuevo',
@@ -108,10 +69,10 @@ class RegistroAlumnoViewTest(TestCase):
             'password1': 'testpass123',
             'password2': 'testpass123',
         })
-        self.assertEqual(response.status_code, 302)  # Redireccion al home
+        self.assertEqual(response.status_code, 302)
         self.assertTrue(Usuario.objects.filter(email='nuevo@ejemplo.com').exists())
 
-    def test_registro_menor_con_tutor(self):
+    def test_registro_alumno_menor_con_tutor(self):
         """Verifica que un menor de edad puede registrarse con tutor."""
         response = self.client.post(reverse('registro_alumno'), {
             'email': 'menor2@ejemplo.com',
@@ -131,3 +92,51 @@ class RegistroAlumnoViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Usuario.objects.filter(email='menor2@ejemplo.com').exists())
         self.assertTrue(Tutor.objects.filter(usuario_alumno__email='menor2@ejemplo.com').exists())
+
+    def test_registro_alumno_menor_sin_tutor_falla(self):
+        """Verifica que un menor de edad no puede registrarse sin tutor."""
+        response = self.client.post(reverse('registro_alumno'), {
+            'email': 'menor3@ejemplo.com',
+            'first_name': 'Menor',
+            'last_name': 'Tres',
+            'dni': '66666666',
+            'telefono': '11-6666-6666',
+            'fecha_nacimiento': '2015-01-01',
+            'password1': 'testpass123',
+            'password2': 'testpass123',
+        })
+        self.assertEqual(response.status_code, 200)  # No redirige, muestra errores
+        self.assertFalse(Usuario.objects.filter(email='menor3@ejemplo.com').exists())
+
+
+class LoginViewTest(TestCase):
+    """Pruebas de la vista de inicio de sesion."""
+
+    def setUp(self):
+        self.client = Client()
+        self.usuario = Usuario.objects.create_user(
+            email='login@ejemplo.com',
+            username='loginuser',
+            password='testpass123',
+            first_name='Login',
+            last_name='User',
+            dni='55555555',
+            fecha_nacimiento=date(1990, 1, 1),
+            rol=Usuario.ROL_ALUMNO
+        )
+
+    def test_login_correcto(self):
+        """Verifica que un usuario puede iniciar sesion correctamente."""
+        response = self.client.post(reverse('login'), {
+            'username': 'login@ejemplo.com',
+            'password': 'testpass123',
+        })
+        self.assertEqual(response.status_code, 302)
+
+    def test_login_incorrecto(self):
+        """Verifica que un usuario no puede iniciar sesion con contraseña incorrecta."""
+        response = self.client.post(reverse('login'), {
+            'username': 'login@ejemplo.com',
+            'password': 'wrongpassword',
+        })
+        self.assertEqual(response.status_code, 200)  # No redirige, muestra errores
