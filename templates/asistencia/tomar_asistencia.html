@@ -17,20 +17,20 @@
             </tr>
         </thead>
         <tbody>
-            {% for inscripcion in inscripciones %}
+            {% for inscripcion, asistencia in inscripciones_con_asistencia %}
                 <tr>
                     <td>{{ inscripcion.alumno }}</td>
                     <td>
                         <select class="form-select" name="estado_{{ inscripcion.pk }}">
-                            <option value="presente" {% if asistencias_existentes|get_item:inscripcion.pk|default:'' == 'presente' %}selected{% endif %}>Presente</option>
-                            <option value="ausente" {% if asistencias_existentes|get_item:inscripcion.pk|default:'' == 'ausente' %}selected{% endif %}>Ausente</option>
-                            <option value="justificado" {% if asistencias_existentes|get_item:inscripcion.pk|default:'' == 'justificado' %}selected{% endif %}>Justificado</option>
+                            <option value="presente" {% if asistencia and asistencia.estado == 'presente' %}selected{% endif %}>Presente</option>
+                            <option value="ausente" {% if asistencia and asistencia.estado == 'ausente' %}selected{% endif %}>Ausente</option>
+                            <option value="justificado" {% if asistencia and asistencia.estado == 'justificado' %}selected{% endif %}>Justificado</option>
                         </select>
                     </td>
                     <td>
                         <input type="text" class="form-control" name="justificacion_{{ inscripcion.pk }}"
                                placeholder="Solo si es justificado"
-                               value="{{ asistencias_existentes|get_item:inscripcion.pk|default:'' }}">
+                               value="{% if asistencia %}{{ asistencia.justificacion }}{% endif %}">
                     </td>
                 </tr>
             {% endfor %}

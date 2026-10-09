@@ -48,10 +48,15 @@ def tomar_asistencia(request, clase_pk):
         a.inscripcion_id: a for a in Asistencia.objects.filter(clase=clase)
     }
 
+    # Crear lista de tuplas (inscripcion, asistencia) para la plantilla
+    inscripciones_con_asistencia = [
+        (inscripcion, asistencias_existentes.get(inscripcion.pk))
+        for inscripcion in inscripciones
+    ]
+
     return render(request, 'asistencia/tomar_asistencia.html', {
         'clase': clase,
-        'inscripciones': inscripciones,
-        'asistencias_existentes': asistencias_existentes,
+        'inscripciones_con_asistencia': inscripciones_con_asistencia,
     })
 
 
