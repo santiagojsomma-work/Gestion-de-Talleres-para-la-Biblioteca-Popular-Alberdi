@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista de Novedades - Biblioteca{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Lista de Novedades</h2>
+    <a href="{% url 'crear_novedad' %}" class="btn btn-primary">Crear Novedad</a>
+</div>
+
+{% if novedades %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Titulo</th>
+                <th>Tipo</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for novedad in novedades %}
+                <tr>
+                    <td>{{ novedad.titulo }}</td>
+                    <td>
+                        {% if novedad.tipo == 'novedad' %}
+                            <span class="badge bg-info">Novedad</span>
+                        {% elif novedad.tipo == 'evento' %}
+                            <span class="badge bg-success">Evento</span>
+                        {% else %}
+                            <span class="badge bg-warning">Suspension</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ novedad.fecha_creacion }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No hay novedades registradas.</p>
+{% endif %}
+{% endblock %}

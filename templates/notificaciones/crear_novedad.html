@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Crear Novedad - Biblioteca{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h2>Crear Novedad</h2>
+        <form method="post" class="mt-4">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="titulo" class="form-label">Titulo</label>
+                <input type="text" class="form-control" id="titulo" name="titulo" required>
+            </div>
+            <div class="mb-3">
+                <label for="contenido" class="form-label">Contenido</label>
+                <textarea class="form-control" id="contenido" name="contenido" rows="5" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="tipo" class="form-label">Tipo</label>
+                <select class="form-select" id="tipo" name="tipo">
+                    <option value="novedad">Novedad</option>
+                    <option value="evento">Evento</option>
+                    <option value="suspension">Suspension</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Crear y notificar</button>
+            <a href="{% url 'lista_novedades' %}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

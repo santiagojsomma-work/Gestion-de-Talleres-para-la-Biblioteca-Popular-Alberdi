@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Mis Notificaciones - Biblioteca{% endblock %}
+
+{% block content %}
+<h2>Mis Notificaciones</h2>
+
+{% if notificaciones %}
+    <div class="mt-4">
+        {% for notificacion in notificaciones %}
+            <div class="card mb-3 {% if not notificacion.leida %}border-primary{% endif %}">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h5 class="card-title">
+                                {% if not notificacion.leida %}
+                                    <span class="badge bg-primary">Nueva</span>
+                                {% endif %}
+                                {{ notificacion.titulo }}
+                            </h5>
+                            <p class="card-text">{{ notificacion.mensaje }}</p>
+                            <small class="text-muted">{{ notificacion.fecha_creacion }}</small>
+                        </div>
+                        {% if not notificacion.leida %}
+                            <form method="post" action="{% url 'marcar_notificacion_leida' notificacion.pk %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-primary">Marcar como leida</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p class="mt-4">No tenes notificaciones.</p>
+{% endif %}
+{% endblock %}

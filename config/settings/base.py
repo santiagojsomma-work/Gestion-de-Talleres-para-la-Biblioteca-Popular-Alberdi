@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'pagos',
     'asistencia',
     'ingresos',
-    # 'notificaciones',
+    'notificaciones',
 ]
 
 # Middleware
